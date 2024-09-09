@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prices</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Stock Prices</h1>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // Pobierz dane przekazane z backendu Flask
+        const labels = {{ labels|tojson|safe }};
+        const values = {{ values|tojson|safe }};
+
+        // Generowanie wykresu z użyciem Chart.js
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,  // Oś X (daty)
+                datasets: [{
+                    label: 'Stock Prices',
+                    data: values,  // Oś Y (ceny)
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
