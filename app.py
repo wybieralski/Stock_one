@@ -1,6 +1,8 @@
+import subprocess
 import pandas as pd
 from flask import Flask, render_template
 from datetime import datetime
+import threading
 
 app = Flask(__name__)
 
@@ -24,5 +26,20 @@ def index():
         print(f"Error: {e}")
         return "An error occurred."
 
+# Funkcja do uruchomienia Airflow
+def run_airflow():
+    try:
+        # Uruchomienie webservera
+        subprocess.Popen(["airflow", "webserver", "--port", "8080"])
+        # Uruchomienie schedulera
+        subprocess.Popen(["airflow", "scheduler"])
+    except Exception as e:
+        print(f"Error running Airflow: {e}")
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
+    # Uruchomienie Airflow w osobnym wątku
+    airflow_thread = threading.Thread(target=run_airflow)
+    airflow_thread.start()
+
+    # Uruchomienie aplikacji Flask
+    app.run(host='0.0.0.0', port=5001)
